@@ -1,0 +1,43 @@
+html
+    head
+        title=title
+        link(href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css', rel='stylesheet')
+    body
+        div.container
+            div.jumbotron
+                h1.text-center Startup High Intensity Triage Portal
+
+                if user
+                    p Welcome, #{user.fullName}
+                    p
+                        //a.small(href="profile") Edit my profile
+                        
+                    iframe#ifrTile(width='100%', height='400')
+                    p
+                        form(action='/logout', method='POST')
+                            button.btn.btn-default(type="submit") Logout
+                    script.
+                        (function () {
+                        //document.getElementById('btnView').onclick = function() {
+                        var iframe = document.getElementById('ifrTile');
+                        iframe.src = 'https://embedded.powerbi.com/appTokenReportEmbed?reportId=#{reportId}';
+                        iframe.onload = function() {
+                        var msgJson = {
+                        action: "loadReport",
+                        accessToken: "#{token}",
+                        height: 722,
+                        width: 722
+                        };
+                        var msgTxt = JSON.stringify(msgJson);
+                        iframe.contentWindow.postMessage(msgTxt, "*");
+                        };
+                        //};
+                        }());
+                else
+                    //p Welcome to my app, ready to get started?
+                    p.text-center
+                        a.btn.btn-primary(href="/login") Login now
+                    p.text-center
+                        span.small Don't have an account?
+                        span &nbsp;
+                        a.small(href="/register") Register now
